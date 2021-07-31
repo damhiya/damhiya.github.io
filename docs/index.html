@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html><head><link rel="stylesheet" href="syntax.css">
-<title> damhiya's blog (index)</title>
+<html><head><link rel="stylesheet" href="/css/main.css">
+<title> damhiya's blog</title>
 </head>
-<body><p> Some contents!</p>
-<h1 id="combinators">Combinators</h1>
-<p>Applicative의 <code>ap</code> 연산자</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">(&lt;*&gt;) ::</span> <span class="dt">Applicative</span> f <span class="ot">=&gt;</span> f (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</span></code></pre></div>
-<p>S combinator</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">(*) ::</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> c) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> c</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>f <span class="op">*</span> g <span class="ot">=</span> \x <span class="ot">-&gt;</span> f x (g x)</span></code></pre></div>
-<p>Y combinator</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fix f <span class="ot">=</span> f (fix f)</span></code></pre></div></body>
+<body><div class="page-wrapper"><h1> My posts!</h1>
+<ul><li><a href="/posts/1-S-combinator.html"> S-combinator</a>
+</li>
+<li><a href="/posts/2-quantification.html"> quantification</a>
+</li>
+</ul>
+</div>
+</body>
 </html>
