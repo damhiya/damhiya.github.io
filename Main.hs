@@ -44,10 +44,10 @@ katex =
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js" integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8" crossorigin="anonymous">
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        Array.from(document.getElementsByClassName("math display")).map( element =>
+        [...document.getElementsByClassName("math display")].forEach( element =>
           katex.render(element.innerHTML, element, {throwOnError: false, displayMode: true})
         );
-        Array.from(document.getElementsByClassName("math inline")).map( element =>
+        [...document.getElementsByClassName("math inline")].forEach( element =>
           katex.render(element.innerHTML, element, {throwOnError: false, displayMode: false})
         );
       });
