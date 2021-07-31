@@ -35,7 +35,23 @@ renderUrl :: T.Text -> Route -> [(T.Text, T.Text)] -> T.Text
 renderUrl root Index     _ = root <> "/index.html"
 renderUrl root MainCss   _ = root <> "/css/main.css"
 renderUrl root SyntaxCss _ = root <> "/css/syntax.css"
-renderUrl root (Post (id, title, format)) _ = root <> T.pack ("/posts/" ++ show id ++ "-" ++ title ++ ".html")
+renderUrl root (Post (id, title, format)) _ = root <> "/posts/" <> T.pack (show id ++ "-" ++ title ++ ".html")
+
+katex :: Html
+katex =
+  [hamlet|
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css" integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js" integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8" crossorigin="anonymous">
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        Array.from(document.getElementsByClassName("math display")).map( element =>
+          katex.render(element.innerHTML, element, {throwOnError: false, displayMode: true})
+        );
+        Array.from(document.getElementsByClassName("math inline")).map( element =>
+          katex.render(element.innerHTML, element, {throwOnError: false, displayMode: false})
+        );
+      });
+  |] (renderUrl "")
 
 postTemplate :: String -> Html -> Html
 postTemplate title content =
@@ -43,6 +59,7 @@ postTemplate title content =
     $doctype 5
     <html>
       <head>
+        #{ katex }
         <link rel=stylesheet href=@{ MainCss }>
         <link rel=stylesheet href=@{ SyntaxCss }>
         <title> #{ title }
@@ -65,6 +82,7 @@ indexTemplate infos =
           <ul>
             #{ mconcat (map listElementTemplate infos) }
   |] (renderUrl "")
+  -- TODO: sort on id of posts
   where
     listElementTemplate :: PostInfo -> Html
     listElementTemplate (id, title, format) =
@@ -89,8 +107,8 @@ convertToHtml format = \content -> case runPure (reader format content >>= write
   Left _ -> error "conversion failed"
   Right r -> r
   where
-    reader MarkDown = readMarkdown def {readerExtensions = githubMarkdownExtensions}
-    writer = writeHtml5 def {writerHighlightStyle = Just tango}
+    reader MarkDown = readMarkdown def {readerExtensions = githubMarkdownExtensions <> extensionsFromList [Ext_tex_math_single_backslash]}
+    writer = writeHtml5 def {writerHighlightStyle = Just tango, writerHTMLMathMethod = KaTeX "https://cdn.jsdelivr.net/npm/katex@0.13.13"}
 
 srcRoot :: T.Text
 srcRoot = "./src"
@@ -102,7 +120,7 @@ main :: IO ()
 main = do
   fnames <- listDirectory (T.unpack srcRoot ++ "/posts")
   let postInfos = map (match postInfo) fnames
-      
+
   forM_ (zip fnames postInfos) $ \case
     (fname , Nothing) -> putStrLn ("wrong file name! :" ++ fname)
     (fname, Just (id, title, format)) -> do
