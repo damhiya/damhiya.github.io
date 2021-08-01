@@ -45,10 +45,10 @@ katex =
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         [...document.getElementsByClassName("math display")].forEach( element =>
-          katex.render(element.innerHTML, element, {throwOnError: false, displayMode: true})
+          katex.render(element.textContent, element, {throwOnError: false, displayMode: true})
         );
         [...document.getElementsByClassName("math inline")].forEach( element =>
-          katex.render(element.innerHTML, element, {throwOnError: false, displayMode: false})
+          katex.render(element.textContent, element, {throwOnError: false, displayMode: false})
         );
       });
   |] (renderUrl "")
