@@ -7,7 +7,7 @@ Date : 2021.8.1
 종료하지 않는 프로그램을 허용하는 것은 곧 논리체계가 inconsistent 함을 의미하기 때문이다.
 이 글 에서는 이런 non-termination을 유발할 수 있는 요소 중 하나인 Curry's paradox에 대해 설명한다.
 
-## Untyped λ-calculus's Y combinator
+## Untyped λ-calculus' Y combinator
 Untyped λ-calculus의 유용성을 가장 단적으로 보여주는 예시는 바로 Y combinator이다.
 \[
   Y \equiv \lambda f . (\lambda x . f (x x)) (\lambda x . f (x x))
