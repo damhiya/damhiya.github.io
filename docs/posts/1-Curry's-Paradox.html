@@ -46,25 +46,112 @@ Date : 2021.8.1
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> n <span class="op">==</span> <span class="dv">0</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">then</span> <span class="dv">1</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span> n <span class="op">*</span> f (n<span class="op">-</span><span class="dv">1</span>)</span></code></pre></div>
+<p>위의 코드에서는 fixpoint combinator <code>fix</code>를 하스켈이 지원하는 자기참조적 정의를 사용하여 정의했다. <span class="math inline">Y</span>의 정의가 자기참조를 필요로 하지 않는 것과 대조적이다.</p>
 <p>그런데 <span class="math inline">Y</span>를 사용하면 종료하지 않는 계산을 만들 수 있다. <span class="math display">
   I \equiv \lambda x . x
-</span> <span class="math display">
+</span> 라고 정의하고 <span class="math inline">YI</span>를 normal-order를 따라 계산해보자. <span class="math display">
   \begin{array}{rl}
                    &amp; YI    \\
-    \longrightarrow&amp; I(YI) \\
-    \longrightarrow&amp; YI
+    \longrightarrow&amp; (\lambda x . I (x x)) (\lambda x . I (x x)) ) \\
+    \longrightarrow&amp; I ( (\lambda x . I (x x)) (\lambda x . I (x x)) ) \\
+    \longrightarrow&amp; (\lambda x . I (x x)) (\lambda x . I (x x)) )
   \end{array}
-</span></p>
-<p><span class="math inline">YI</span> 는 β-reduction을 아무리 수행하여도 β normal form에 도달할 수 없다. 이는 untyped λ-calculus에서 weak normalization property가 성립하지 않음을 의미한다. 사실 더 단순한 예시로 <span class="math inline">\Omega</span>가 있다. <span class="math display">
-  \begin{array}{rrl}
-    \Omega &amp;          \equiv &amp; (\lambda x . x x) (\lambda x . x x) \\
-           &amp; \longrightarrow &amp; (\lambda y . y y) (\lambda x . x x) \\
-           &amp; \longrightarrow &amp; (y y) [y := \lambda x . x x]        \\
-           &amp; \longrightarrow &amp; (\lambda x . x x) (\lambda x . x x)
+</span> β-reduction을 수행하던 중 중간의 식으로 되돌아 왔으므로 이 계산은 종료하지 않는다. 사실 untyped λ-calculus에서 normal-order reduction이 종료하지 않는다면 β-reduction을 어떤 순서로 실행한다 하여도 계산이 종료할 수 없다.</p>
+<p><span class="math inline">YI</span>의 계산이 종료하지 않음으로 untyped λ-calculus에서 weak normalization property가 성립하지 않음을 의미한다. 사실 더 단순한 예시로 <span class="math inline">\Omega</span>가 있다. <span class="math display">
+  \begin{align*}
+    \omega  \equiv &amp; \  \lambda x . x x \\
+    \Omega  \equiv &amp; \ \omega \omega
+  \end{align*}
+</span> <span class="math display">
+  \begin{array}{rl}
+                    &amp; \Omega                              \\
+    \longrightarrow &amp; (\lambda x . x x) (\lambda x . x x) \\
+    \longrightarrow &amp; (\lambda y . y y) (\lambda x . x x) \\
+    \longrightarrow &amp; (y y) [y := \lambda x . x x]        \\
+    \longrightarrow &amp; (\lambda x . x x) (\lambda x . x x)
   \end{array}
 </span></p>
 <p>fixpoint combinator에게 타입을 붙여보면 애초에 논리적으로 말이 되지 않음을 알 수 있다. 하스켈에서 <code>fix</code>는 다음과 같은 타입을 갖는다.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">fix ::</span> ∀ α<span class="op">.</span> (α → α) → α</span></code></pre></div>
-<p>Propositions as types의 관점에서 볼 때, 이는 "<span class="math inline">P</span> 일 때 <span class="math inline">P</span> 라면, <span class="math inline">P</span> 이다"를 의미한다. Tautology에서 임의의 명제를 증명해 낼 수 있는 것이다. 따라서 이런 fixpoint를 가지는 논리체계는 inconsistent 하다.</p></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">fix ::</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fix<span class="ot"> id ::</span> a</span></code></pre></div>
+<p>Propositions as types의 관점에서 볼 때, 이는 "<span class="math inline">P</span> 일 때 <span class="math inline">P</span> 라면, <span class="math inline">P</span> 이다"를 의미한다. Tautology에서 임의의 명제를 증명해낼 수 있는 것이다. 즉, 이런 fixpoint combintor를 가지는 논리체계는 inconsistent 하다. 때문에 타입 시스템을 논리체계로서 사용하는 proof assistant 에서는 일반적인 fixpoint combinator를 허용하지 않으며, 제한된 형태로만 사용할 수 있다.</p>
+<h2 id="writing-y-combinator-in-haskell">Writing Y combinator in Haskell</h2>
+<p>Y combinator를 하스켈에서 만들어보자. 람다식을 하스켈로 번역하는 것은 그리 어렵지 않다.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> \f <span class="ot">-&gt;</span> (\x <span class="ot">-&gt;</span> f (x x)) (\x <span class="ot">-&gt;</span> f (x x))</span></code></pre></div>
+<p>그런데 이 코드를 GHC로 읽어보면 타입 에러가 발생한다.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>λ<span class="op">&gt;</span> y <span class="ot">=</span> \f <span class="ot">-&gt;</span> (\x <span class="ot">-&gt;</span> f (x x)) (\x <span class="ot">-&gt;</span> f (x x))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>interactive<span class="op">&gt;:</span><span class="dv">1</span><span class="op">:</span><span class="dv">39</span><span class="op">:</span> <span class="fu">error</span><span class="op">:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    • <span class="dt">Occurs</span> check<span class="op">:</span> cannot construct the infinite <span class="kw">type</span><span class="op">:</span> t0 <span class="op">~</span> t0 <span class="ot">-&gt;</span> t</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    • <span class="dt">In</span> the first argument <span class="kw">of</span> ‘x’, namely ‘x’</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">In</span> the first argument <span class="kw">of</span> ‘f’, namely ‘(x x)’</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">In</span> the expression<span class="op">:</span> f (x x)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    • <span class="dt">Relevant</span> bindings include</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ot">        x ::</span> t0 <span class="ot">-&gt;</span> t (bound at <span class="op">&lt;</span>interactive<span class="op">&gt;:</span><span class="dv">1</span><span class="op">:</span><span class="dv">29</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ot">        f ::</span> t <span class="ot">-&gt;</span> t (bound at <span class="op">&lt;</span>interactive<span class="op">&gt;:</span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ot">        y ::</span> (t <span class="ot">-&gt;</span> t) <span class="ot">-&gt;</span> t (bound at <span class="op">&lt;</span>interactive<span class="op">&gt;:</span><span class="dv">1</span><span class="op">:</span><span class="dv">1</span>)</span></code></pre></div>
+<p>에러 메시지에 따르면 <code>(x x)</code>라는 식의 타입을 검사하던 중 infinite type을 construct해야 하는 문제가 생겼다고 한다.</p>
+<p><code>(x x)</code>의 타입추론 과정을 따라가 보자.</p>
+<ul>
+<li><code>(x x)</code>의 타입을 <code>t</code>라고 가정한다. <code>t</code>는 미결정된 타입 변수이다. 간단히 <code>(x x) :: t</code>라고 쓰자.</li>
+<li><code>(x x)</code>에서 사용된 변수들의 타입을 가정한다. 여기선 <code>x</code> 뿐 이므로 <code>x :: t0</code>를 가정한다.</li>
+<li>편의상 <code>x</code>에 첨자를 붙여 <code>(x x)</code>를 <code>(x₀ x₁)</code>로 구분하자.</li>
+<li><code>x₀</code>에 <code>x₁ :: t0</code>가 인자로 적용된 결과의 타입이 <code>t</code>이므로 <code>x₀</code>는 <code>t0</code>에서 <code>t</code>로 가는 함수이다. 즉 <code>x₀ :: t0 -&gt; t</code></li>
+<li><code>x₀ :: t0</code> 이고 <code>x₀ :: t0 -&gt; t</code>이므로 두 타입이 같아야 한다. 즉 <code>t0 ~ t0 -&gt; t</code></li>
+<li>constraint <code>t0 ~ t0 -&gt; t</code>를 풀고자 <code>t0</code>를 반복적으로 치환하면 <code>(((...) -&gt; t) -&gt; t) -&gt; t</code>의 무한한 타입을 얻게된다.</li>
+<li>타입은 유한해야 하므로 말이 되지 않는다.</li>
+</ul>
+<p>즉 무한 타입을 허용하지 않는 한, Y combinator에게 타입을 부여하는 것은 불가능 하다. 사실 untyped λ-calculus에 타입을 도입해 허용되는 항을 제한한 simply typed λ-calculus 에서는 <span class="math inline">Y</span>가 정의되지 않을 뿐만 아니라, strong normalization property가 성립한다. 타입 검사를 통과하는 모든 항이 평가전략과 무관하게 계산이 종료한다는 뜻 이다. 타입을 붙인다는 것은 그 정도로 강한 조건이다.</p>
+<p>정리하자면 하스켈에서 재귀적 정의를 사용해 fixpoint combinator를 만드는 것이 가능하지만, Y combinator는 타입이 맞지 않아 정의할 수 없다.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fix f <span class="ot">=</span> f (fix f)                         <span class="co">-- ok</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> \f <span class="ot">-&gt;</span> (\x <span class="ot">-&gt;</span> f (x x)) (\x <span class="ot">-&gt;</span> f (x x)) <span class="co">-- type error</span></span></code></pre></div>
+<p>그리고 타입에러가 발생한 이유는 <code>t0 ~ t0 -&gt; t</code>를 만족하는 타입 <code>t0</code>가 존재하지 않기 때문이다.</p>
+<p>그렇다면 이를 강제로 만족하게 만든다면 어떨까? 타입이 정말로 같은것은 아니지만, 다음과 같은 재귀적 타입을 사용하면 두 타입을 isomorphic하게 만드는 것은 가능하다.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">T</span> a <span class="ot">=</span> <span class="dt">FoldT</span> {<span class="ot">unfoldT ::</span> (<span class="dt">T</span> a <span class="ot">-&gt;</span> a)}</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">FoldT</span><span class="ot"> ::</span> (<span class="dt">T</span> a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> <span class="dt">T</span> a</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ot">unfoldT ::</span> <span class="dt">T</span> a <span class="ot">-&gt;</span> (<span class="dt">T</span> a <span class="ot">-&gt;</span> a)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- FoldT . unfoldT = id</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- unfoldT . FoldT = id</span></span></code></pre></div>
+<p><code>FoldT</code>와 <code>unfoldT</code>는 각각 constructor/destructor 이므로 서로 합성하면 identity function이 된다. 즉 <code>T a</code> 와 <code>T a -&gt; a</code>는 isomorphic 하다. <code>a</code>가 <code>t</code>, <code>T a</code>가 <code>t0</code>의 역할을 한다고 생각하면 된다.</p>
+<p>이를 이용해서 Y combinator를 만들어 보자.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ot">y ::</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> \f <span class="ot">-&gt;</span> (\x <span class="ot">-&gt;</span> f (unfoldT x x)) (<span class="dt">FoldT</span> (\x <span class="ot">-&gt;</span> f (unfoldT x x)))</span></code></pre></div>
+<p>이렇게 정의한 <code>y</code>를 전개 해보면 마찬가지로 fixpoint combinator의 정의를 만족함을 알 수 있다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>y f <span class="ot">=</span> (\x <span class="ot">-&gt;</span> f (unfoldT x x)) (<span class="dt">FoldT</span> (\x <span class="ot">-&gt;</span> f (unfoldT x x)))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="ot">=</span> f (unfoldT (<span class="dt">FoldT</span> (\x <span class="ot">-&gt;</span> f (unfoldT x x))) (<span class="dt">FoldT</span> (\x <span class="ot">-&gt;</span> f (unfoldT x x))))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">=</span> f ((\x <span class="ot">-&gt;</span> f (unfoldT x x)) (<span class="dt">FoldT</span> (\x <span class="ot">-&gt;</span> f (unfoldT x x))))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">=</span> f (y f)</span></code></pre></div>
+<h2 id="currys-paradox">Curry's paradox</h2>
+<p>Y combinator가 정의되었다는 사실은 흥미롭지만, 한편 골아픈 문제이기도 하다. 단지 <code>T a = T a -&gt; a</code> (여기서 등호는 두 타입이 isomorphic 함을 의미한다) 를 만족하는 데이터 타입을 정의하면 fixpoint combinator를 얻을 수 있다. fixpoint combinator에서 임의의 명제를 증명할 수 있으므로 이는 곧 타입체계가 inconsistent해 짐을 의미한다.</p>
+<p>Curry's paradox가 말하는 바가 바로 이것이다. <code>FoldT</code>와 <code>unfoldT</code>로 부터 임의의 명제를 증명해 보자. <code>y id</code> 로도 가능하지만 아까 소개한 <span class="math inline">\Omega</span>를 사용하는 편이 더 간단하다. <code>omega</code>가 <span class="math inline">\omega</span>, <code>bad</code>가 <span class="math inline">\Omega</span>에 해당한다.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ot">omega ::</span> <span class="dt">T</span> a <span class="ot">-&gt;</span> a</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>omega <span class="ot">=</span> \x <span class="ot">-&gt;</span> foldT x x</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ot">bad ::</span> a</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>bad <span class="ot">=</span> omega (<span class="dt">FoldT</span> omega)</span></code></pre></div>
+<p>하스켈이 자랑하는 재귀적 타입은 inconsistency를 만들어 낼 수 밖에 없는 것일까? 그렇지는 않다. 예를들어 다음 정의는 전혀 문제가 되지 않는다.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">U</span> a <span class="ot">=</span> <span class="dt">FoldU</span> {<span class="ot">unfoldU ::</span> <span class="dt">Either</span> a (<span class="dt">U</span> a, <span class="dt">U</span> a)}</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="dt">FoldU</span><span class="ot"> ::</span> <span class="dt">Either</span> a (<span class="dt">U</span> a, <span class="dt">U</span> a) <span class="ot">-&gt;</span> <span class="dt">U</span> a</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ot">unfoldU ::</span> <span class="dt">U</span> a <span class="ot">-&gt;</span> <span class="dt">Either</span> a (<span class="dt">U</span> a, <span class="dt">U</span> a)</span></code></pre></div>
+<p>임의로 재귀적 타입 <code>U</code>를 정의해 보았지만, 여기서는 <code>T</code>와 달리 별다른 문제점이 발생하지 않는다. 어째서 <code>T</code>의 정의만이 inconsistency를 만들어 낼까?</p>
+<p>설명을 간단히 하기 위해 타입 변수에 임의로 <code>A</code>라는 타입을 대입해 보자.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">T</span> <span class="ot">=</span> <span class="dt">FoldT</span> {<span class="ot">unfoldT ::</span> <span class="dt">T</span> <span class="ot">-&gt;</span> <span class="dt">A</span>}</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">U</span> <span class="ot">=</span> <span class="dt">FoldU</span> {<span class="ot">unfoldU ::</span> <span class="dt">Either</span> <span class="dt">A</span> (<span class="dt">U</span>, <span class="dt">U</span>)}</span></code></pre></div>
+<p>이렇게 놓고 보니 두 정의의 차이점은 <code>T -&gt; A</code>와 <code>Either A (U, U)</code>부분 밖에는 없어 보인다. 이 둘에게 이름을 한번 붙여보자.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">FT</span> a <span class="ot">=</span> <span class="dt">FT</span> (a <span class="ot">-&gt;</span> <span class="dt">A</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">FU</span> a <span class="ot">=</span> <span class="dt">FU</span> (<span class="dt">Either</span> <span class="dt">A</span> (a, a))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">T</span> <span class="ot">=</span> <span class="dt">FoldT</span> {<span class="ot">unfoldT ::</span> <span class="dt">FT</span> <span class="dt">T</span>}</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">U</span> <span class="ot">=</span> <span class="dt">FoldU</span> {<span class="ot">unfoldU ::</span> <span class="dt">FU</span> <span class="dt">U</span>}</span></code></pre></div>
+<p><code>FT</code>와 <code>FU</code>를 잘 관찰하면 차이점이 명백해진다. 둘은 완전히 반대의 성질을 띤다!</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Contravariant</span> <span class="dt">FT</span> <span class="kw">where</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ot">  contramap ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (<span class="dt">FT</span> b <span class="ot">-&gt;</span> <span class="dt">FT</span> a)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  contramap f (<span class="dt">FT</span> g) <span class="ot">=</span> <span class="dt">FT</span> (g <span class="op">.</span> f)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Functor</span> <span class="dt">FU</span> <span class="kw">where</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="ot">  fmap ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (<span class="dt">FU</span> a <span class="ot">-&gt;</span> <span class="dt">FU</span> b)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmap</span> f (<span class="dt">FU</span> (<span class="dt">Left</span> x)) <span class="ot">=</span> <span class="dt">FU</span> (<span class="dt">Left</span> x)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmap</span> f (<span class="dt">FU</span> (<span class="dt">Right</span> (x, y))) <span class="ot">=</span> <span class="dt">FU</span> (<span class="dt">Right</span> (f x, f y))</span></code></pre></div>
+<p>이해를 돕기 위해 타입시그니쳐를 추가하였으나 이는 하스켈 표준 문법은 아니다. GHC에서 코드를 실행해보고 싶다면 타입시그니쳐를 제거하거나 <code>InstanceSigs</code> 언어 확장을 켜야 한다.</p></div>
 </body>
 </html>
