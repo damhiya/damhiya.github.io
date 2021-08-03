@@ -80,12 +80,13 @@ indexTemplate infos =
     $doctype 5
     <html>
       <head>
+        <meta name="google-site-verification" content="D7Di9xyWnUvKT42Zw-idSUh7pgZz2OpC3xY97jd_UII">
         <link rel=stylesheet href=@{ MainCss }>
         <title> damhiya's blog
       <body>
         <div class=page-wrapper>
           <a href="https://github.com/damhiya"> 깃헙 프로필
-          <h2> Postings
+          <h2> Posts
           <ul>
             #{ mconcat (map listElementTemplate infos) }
   |] (renderUrl "")
@@ -129,7 +130,7 @@ main = do
   let postInfos = map (match postInfo) fnames
 
   forM_ (zip fnames postInfos) $ \case
-    (fname , Nothing) -> putStrLn ("wrong file name! :" ++ fname)
+    (fname, Nothing) -> putStrLn ("wrong file name! :" ++ fname)
     (fname, Just (id, title, format)) -> do
       content <- T.readFile (T.unpack srcRoot ++ "/posts/" ++ fname)
       let content' = postTemplate title (convertToHtml format content)
