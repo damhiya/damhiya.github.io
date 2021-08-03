@@ -35,7 +35,7 @@ renderUrl :: T.Text -> Route -> [(T.Text, T.Text)] -> T.Text
 renderUrl root Index     _ = root <> "/index.html"
 renderUrl root MainCss   _ = root <> "/css/main.css"
 renderUrl root SyntaxCss _ = root <> "/css/syntax.css"
-renderUrl root (Post (id, title, format)) _ = root <> "/posts/" <> T.pack (show id ++ "-" ++ title ++ ".html")
+renderUrl root (Post (id, title, format)) _ = root <> "/posts/" <> T.pack (title ++ ".html")
 
 katex :: Html
 katex =
@@ -66,6 +66,12 @@ postTemplate title content =
       <body>
         <div class=page-wrapper>
           #{ content }
+          <script src="https://utteranc.es/client.js"
+            repo="damhiya/damhiya.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
   |] (renderUrl "")
  
 indexTemplate :: [PostInfo] -> Html
@@ -108,7 +114,7 @@ convertToHtml format = \content -> case runPure (reader format content >>= write
   Right r -> r
   where
     reader MarkDown = readMarkdown def {readerExtensions = githubMarkdownExtensions <> extensionsFromList [Ext_tex_math_single_backslash]}
-    writer = writeHtml5 def {writerHighlightStyle = Just tango, writerHTMLMathMethod = KaTeX "https://cdn.jsdelivr.net/npm/katex@0.13.13"}
+    writer = writeHtml5 def {writerHighlightStyle = Just tango, writerHTMLMathMethod = KaTeX defaultKaTeXURL}
 
 srcRoot :: T.Text
 srcRoot = "./src"

@@ -6,7 +6,7 @@
 
 <link rel="stylesheet" href="/css/main.css">
 <link rel="stylesheet" href="/css/syntax.css">
-<title> Curry&#39;s-Paradox</title>
+<title> Curry&#39;s-paradox</title>
 </head>
 <body><div class="page-wrapper"><!--
 Date : 2021.8.1
@@ -57,7 +57,7 @@ Date : 2021.8.1
     \longrightarrow&amp; (\lambda x . I (x x)) (\lambda x . I (x x)) )
   \end{array}
 </span> β-reduction을 수행하던 중 중간의 식으로 되돌아 왔으므로 이 계산은 종료하지 않는다. 사실 untyped λ-calculus에서 normal-order reduction이 종료하지 않는다면 β-reduction을 어떤 순서로 실행한다 하여도 계산이 종료할 수 없다.</p>
-<p><span class="math inline">YI</span>의 계산이 종료하지 않음으로 untyped λ-calculus에서 weak normalization property가 성립하지 않음을 의미한다. 사실 더 단순한 예시로 <span class="math inline">\Omega</span>가 있다. <span class="math display">
+<p><span class="math inline">YI</span>의 계산이 종료하지 않음으로 untyped λ-calculus에서 weak normalization property가 성립하지 않는다고 말할 수 있다. 사실 더 단순한 예시로 <span class="math inline">\Omega</span>가 있다. <span class="math display">
   \begin{align*}
     \omega  \equiv &amp; \  \lambda x . x x \\
     \Omega  \equiv &amp; \ \omega \omega
@@ -143,7 +143,7 @@ Date : 2021.8.1
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">FU</span> a <span class="ot">=</span> <span class="dt">FU</span> (<span class="dt">Either</span> <span class="dt">A</span> (a, a))</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">T</span> <span class="ot">=</span> <span class="dt">FoldT</span> {<span class="ot">unfoldT ::</span> <span class="dt">FT</span> <span class="dt">T</span>}</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">U</span> <span class="ot">=</span> <span class="dt">FoldU</span> {<span class="ot">unfoldU ::</span> <span class="dt">FU</span> <span class="dt">U</span>}</span></code></pre></div>
-<p><code>FT</code>와 <code>FU</code>를 잘 관찰하면 차이점이 명백해진다. 둘은 완전히 반대의 성질을 띤다!</p>
+<p><code>FT</code>와 <code>FU</code>의 covariant/contravariant functor 인스턴스를 구현해보면 차이점이 명백해진다. 둘은 완전히 반대의 성질을 띤다!</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Contravariant</span> <span class="dt">FT</span> <span class="kw">where</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ot">  contramap ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (<span class="dt">FT</span> b <span class="ot">-&gt;</span> <span class="dt">FT</span> a)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  contramap f (<span class="dt">FT</span> g) <span class="ot">=</span> <span class="dt">FT</span> (g <span class="op">.</span> f)</span>
@@ -152,6 +152,8 @@ Date : 2021.8.1
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="ot">  fmap ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (<span class="dt">FU</span> a <span class="ot">-&gt;</span> <span class="dt">FU</span> b)</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmap</span> f (<span class="dt">FU</span> (<span class="dt">Left</span> x)) <span class="ot">=</span> <span class="dt">FU</span> (<span class="dt">Left</span> x)</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmap</span> f (<span class="dt">FU</span> (<span class="dt">Right</span> (x, y))) <span class="ot">=</span> <span class="dt">FU</span> (<span class="dt">Right</span> (f x, f y))</span></code></pre></div>
-<p>이해를 돕기 위해 타입시그니쳐를 추가하였으나 이는 하스켈 표준 문법은 아니다. GHC에서 코드를 실행해보고 싶다면 타입시그니쳐를 제거하거나 <code>InstanceSigs</code> 언어 확장을 켜야 한다.</p></div>
+<p>이해를 돕기 위해 타입시그니쳐를 추가하였으나 이는 하스켈 표준 문법은 아니다. GHC에서 코드를 실행해보고 싶다면 타입시그니쳐를 제거하거나 <code>InstanceSigs</code> 언어 확장을 켜야 한다.</p>
+<script src="https://utteranc.es/client.js" repo="damhiya/damhiya.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+</div>
 </body>
 </html>

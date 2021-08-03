@@ -76,7 +76,7 @@ factorial = fix $ \f n ->
 β-reduction을 수행하던 중 중간의 식으로 되돌아 왔으므로 이 계산은 종료하지 않는다.
 사실 untyped λ-calculus에서 normal-order reduction이 종료하지 않는다면 β-reduction을 어떤 순서로 실행한다 하여도 계산이 종료할 수 없다.
 
-\(YI\)의 계산이 종료하지 않음으로 untyped λ-calculus에서 weak normalization property가 성립하지 않음을 의미한다.
+\(YI\)의 계산이 종료하지 않음으로 untyped λ-calculus에서 weak normalization property가 성립하지 않는다고 말할 수 있다.
 사실 더 단순한 예시로 \(\Omega\)가 있다.
 \[
   \begin{align*}
@@ -217,7 +217,7 @@ newtype T = FoldT {unfoldT :: FT T}
 newtype U = FoldU {unfoldU :: FU U}
 ```
 
-`FT`와 `FU`를 잘 관찰하면 차이점이 명백해진다. 둘은 완전히 반대의 성질을 띤다!
+`FT`와 `FU`의 covariant/contravariant functor 인스턴스를 구현해보면 차이점이 명백해진다. 둘은 완전히 반대의 성질을 띤다!
 ```haskell
 instance Contravariant FT where
   contramap :: (a -> b) -> (FT b -> FT a)
@@ -230,3 +230,5 @@ instance Functor FU where
 ```
 이해를 돕기 위해 타입시그니쳐를 추가하였으나 이는 하스켈 표준 문법은 아니다.
 GHC에서 코드를 실행해보고 싶다면 타입시그니쳐를 제거하거나 `InstanceSigs` 언어 확장을 켜야 한다.
+
+

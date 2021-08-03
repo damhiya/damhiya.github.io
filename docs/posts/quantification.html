@@ -13,6 +13,8 @@
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">id</span> x <span class="ot">=</span> x</span></code></pre></div>
 <p>Existential quantification</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Σ <span class="ot">(</span>A <span class="ot">:</span> Type<span class="ot">)</span> <span class="ot">(</span>B <span class="ot">:</span> A <span class="ot">→</span> Type<span class="ot">)</span> <span class="ot">:</span> Type <span class="kw">where</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">_</span>,<span class="ot">_</span> <span class="ot">:</span> <span class="ot">∀</span> <span class="ot">(</span>x <span class="ot">:</span> A<span class="ot">)</span> <span class="ot">→</span> B x <span class="ot">→</span> Σ A B</span></code></pre></div></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">_</span>,<span class="ot">_</span> <span class="ot">:</span> <span class="ot">∀</span> <span class="ot">(</span>x <span class="ot">:</span> A<span class="ot">)</span> <span class="ot">→</span> B x <span class="ot">→</span> Σ A B</span></code></pre></div>
+<script src="https://utteranc.es/client.js" repo="damhiya/damhiya.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+</div>
 </body>
 </html>
