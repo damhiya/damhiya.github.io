@@ -84,7 +84,8 @@ indexTemplate infos =
         <title> damhiya's blog
       <body>
         <div class=page-wrapper>
-          <h1> My posts!
+          <a href="https://github.com/damhiya"> 깃헙 프로필
+          <h2> Postings
           <ul>
             #{ mconcat (map listElementTemplate infos) }
   |] (renderUrl "")
