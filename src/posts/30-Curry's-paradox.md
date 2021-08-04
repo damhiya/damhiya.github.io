@@ -231,7 +231,7 @@ instance Functor FU where
 이해를 돕기 위해 타입시그니쳐를 추가하였으나 이는 하스켈 표준 문법은 아니다.
 GHC에서 코드를 실행해보고 싶다면 타입시그니쳐를 제거하거나 `InstanceSigs` 언어 확장을 켜야 한다.
 
-일반적으로 contravariant functor를 사용해 재귀적인 타입을 정의 하려고 하면 Curry's paradox가 발생할 수 있다.
+일반적으로 contravariant functor를 사용해 재귀적인 타입을 정의하면 Curry's paradox가 발생할 수 있다.
 
 ## Strict positivity in proof assistant
 Haskell을 사용하면서 Curry's paradox를 문제삼는 경우는 거의 없으나,
