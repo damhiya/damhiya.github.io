@@ -30,7 +30,7 @@ Currying등 FP의 기초적인 지식에 대해서는 별도로 설명을 하지
 아마 `map`을 처음 접하는 사람이라고 하여도 위 예시를 통해 `map`의 동작을 충분히 예측할 수 있을것이다.
 구체적으로 얘기하자면 `map`은 다음 등식을 만족한다.
 ```haskell
-map f [x₀, x₁, .., xₙ] = [f x₀, f x₁, .., f xₙ]
+map f [x₁, x₂, .., xₙ] = [f x₁, f x₂, .., f xₙ]
 ```
 이보다 쉬울 수 없다! `map`은 그저
 
@@ -82,7 +82,7 @@ instance Functor Maybe where
   map f (Just x) = Just (f x)
 
 instance Functor BinTree where
-  map f (Tip x) = Tip (f x)
+  map f (Tip x) k      = Tip (f x)
   map f (Branch x l r) = Branch (f x) (map f l) (map f r)
 ```
 리스트의 `map`은 아까 보았지만, 이것이 펑터의 인터페이스에 들어맞음을 보이기 위해 한번 더 언급하였다.
@@ -119,7 +119,7 @@ instance Functor BinTree where
 map id = id
 map (g ∘ f) = map g ∘ map f
 ```
-각각 "항등함수의 보존", "함수 합성의 보존" 이라고 얘기할 수 있다.
+첫번째는 "항등함수의 보존", 그리고 두번째는 "함수 합성의 보존"이다.
 
 <!--
 ## Contravariant functor

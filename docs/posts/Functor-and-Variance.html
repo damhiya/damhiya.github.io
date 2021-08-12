@@ -25,7 +25,7 @@
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>λ<span class="op">&gt;</span> <span class="fu">map</span> (\n <span class="ot">-&gt;</span> <span class="fu">take</span> n <span class="st">&quot;Hello&quot;</span>) [<span class="dv">1</span><span class="op">..</span><span class="dv">5</span>]</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>[<span class="st">&quot;H&quot;</span>,<span class="st">&quot;He&quot;</span>,<span class="st">&quot;Hel&quot;</span>,<span class="st">&quot;Hell&quot;</span>,<span class="st">&quot;Hello&quot;</span>]</span></code></pre></div>
 <p>아마 <code>map</code>을 처음 접하는 사람이라고 하여도 위 예시를 통해 <code>map</code>의 동작을 충분히 예측할 수 있을것이다. 구체적으로 얘기하자면 <code>map</code>은 다음 등식을 만족한다.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span> f [x₀, x₁, <span class="op">..</span>, xₙ] <span class="ot">=</span> [f x₀, f x₁, <span class="op">..</span>, f xₙ]</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span> f [x₁, x₂, <span class="op">..</span>, xₙ] <span class="ot">=</span> [f x₁, f x₂, <span class="op">..</span>, f xₙ]</span></code></pre></div>
 <p>이보다 쉬울 수 없다! <code>map</code>은 그저</p>
 <ul>
 <li>인자로 받은 함수 <code>f</code>를 두번째 인자인 리스트의 모든 원소에 <strong>일괄적으로</strong> 적용한다.</li>
@@ -57,7 +57,7 @@
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span> f (<span class="dt">Just</span> x) <span class="ot">=</span> <span class="dt">Just</span> (f x)</span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Functor</span> <span class="dt">BinTree</span> <span class="kw">where</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span> f (<span class="dt">Tip</span> x) <span class="ot">=</span> <span class="dt">Tip</span> (f x)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span> f (<span class="dt">Tip</span> x) k      <span class="ot">=</span> <span class="dt">Tip</span> (f x)</span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span> f (<span class="dt">Branch</span> x l r) <span class="ot">=</span> <span class="dt">Branch</span> (f x) (<span class="fu">map</span> f l) (<span class="fu">map</span> f r)</span></code></pre></div>
 <p>리스트의 <code>map</code>은 아까 보았지만, 이것이 펑터의 인터페이스에 들어맞음을 보이기 위해 한번 더 언급하였다.</p>
 <p>다시 말하지만 펑터는 퍽 단순하기에, 구현이 어떻게 되야하는지 예측하기 그리 어렵지 않다. 그저 <code>a</code>가 등장하는 모든 곳에 인자로 받은 함수를 적용해 <code>b</code>로 치환하는 것이 전부이다.</p>
@@ -78,7 +78,7 @@
 <p>다행히도 수학자들이 이 기준을 정의내린 바가 있다. 다음의 두 등식은 펑터 규칙이라 불린다.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span> <span class="fu">id</span> <span class="ot">=</span> <span class="fu">id</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span> (g ∘ f) <span class="ot">=</span> <span class="fu">map</span> g ∘ <span class="fu">map</span> f</span></code></pre></div>
-<p>각각 "항등함수의 보존", "함수 합성의 보존" 이라고 얘기할 수 있다.</p>
+<p>첫번째는 "항등함수의 보존", 그리고 두번째는 "함수 합성의 보존"이다.</p>
 <!--
 ## Contravariant functor
 ## Variance
