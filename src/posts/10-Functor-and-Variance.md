@@ -203,7 +203,7 @@ instance Functor BinTree where
 fmap id = id
 fmap (g ∘ f) = fmap g ∘ fmap f
 ```
-첫번째는 "항등함수의 보존", 그리고 두번째는 "함수 합성의 보존"이다.
+첫번째는 "항등함수의 보존", 그리고 두번째는 "(함수) 합성의 보존"이다.
 
 먼저 올바른 리스트의 펑터 구현에서 펑터규칙이 만족됨을 확인해 보자.
 ```haskell
@@ -228,24 +228,80 @@ fmap id [1] = [1,1] ≠ id [1]
 ```
 `1`이 두개로 복사된다면 항등함수 보존을 만족할 수 없다.
 
-<!--
+하지만 정말 두 개의 조건이 다 필요한 것일까?
+예시를 하나 생각해 보자.
+```haskell
 data T a = T Bool a
+```
+즉 `Bool`과 `a`의 튜플로 이루어진 타입이다.
+이 타입에 대한 올바른 펑터 인스턴스는 다음과 같다.
+```haskell
+instance Functor T where
+  fmap f (T b x) = T b (f x)
+```
+`Bool`의 내용물은 그대로 두고, `a`에만 `f`를 적용하면 된다.
 
--- id 보존 안함.  composition은 보존 함
-map f (T True  x) = T False (f x)
-map f (T False x) = T False (f x)
+이번에는 잘못된 구현을 보도록 하자.
+```haskell
+instance Functor T where
+  fmap f (T True  x) = T False (f x)
+  fmap f (T False x) = T False (f x)
+```
+이 `fmap`은 항등함수를 보존하지 않는다.
+```haskell
+fmap id (T True x) = T False x ≠ id (T True x) = T True x
+```
+그러나 신기하게도, 합성은 보존된다.
+```haskell
+fmap (g ∘ f) (T b x) = T False (g (f x)) = (fmap g ∘ fmap f) (T b x)
+```
 
--- id 를 보존 함. composition은 보존하지 않음.
--- (f . g) = id, f != id
-map f (T True x) = if f == id
-  then (T True x)
-  else (T False (f x))
-map f (T False x) = T False (f x)
+또 다른 잘못된 구현을 살펴보자.
+```haskell
+instance Functor T where
+  fmap f (T True x) = if f == id
+    then (T True x)
+    else (T False (f x))
+  fmap f (T False x) = T False (f x)
+```
+이번 구현은 `f = id` 일 때만 ad-hoc한 방식으로 올바른 구현이 되며,
+그렇지 않을 때에는 먼저 본 잘못된 구현과 똑같이 동작 한다.
 
--- 하스켈의 펑터는 항상 구현이 유일하며, id 보존만으로 펑터규칙 성립한다.
--->
+물론 이 코드는 사실 pseudo-Haskell 코드이다.
+실제 하스켈에서는 `f == id` 같은 연산으로 어떤 함수가 `id`인지 판별할 수 없지만
+흔히 보는 수학의 함수에서는 이런 함수가 그다지 이상한 것이 아니므로 이런 함수가 존재한다고 가정하고 생각해보자.
+
+이 구현에서는 항등함수 보존이 만족 된다.
+```haskell
+fmap id (T b x) = T b x = id (T b x)
+```
+
+하지만 합성은 보존되지 않는다.
+`g ∘ f = id`, `f ≠ id`를 만족하는 함수 `f`,`g`가 존재한다고 가정해보자.
+대표적으로 `f = g = not :: Bool -> Bool`이 있다.
+```haskell
+fmap (g ∘ f) (T True x) = fmap id (T True x) = T True x
+(fmap g ∘ fmap f) (T True x) = fmap g (T False (f x)) = T False (g (f x)) = T False x
+```
+
+이것으로 완전히 납득이 되었을지는 잘 모르겠지만,
+항등함수의 보존과 합성의 보존은 각각 독립적으로
+펑터의 정의가 우리의 직관을 반영하게 하는데에 기여하는 중요한 법칙이다.
+
+정리하자면 펑터의 정의는 다음과 같다. (pseudo-Haskell 이다.)
+```haskell
+class Functor (f :: Type -> Type) where
+  fmap :: (a -> b) -> f a -> f b
+
+  identityLaw :: fmap id = id
+  compositionLaw :: fmap (g ∘ f) = fmap g ∘ fmap f
+```
+실제 하스켈에서 항등함수 보존이나 합성 보존같은 법칙을 표현하거나 강제할 방법은 없으나,
+적어도 프로그래머는 항상 이 법칙이 만족되도록 펑터 인스턴스를 구현해야 한다.
+(만족하지 않는다면 버그이다.)
 
 <!--
+## Functor and Haskell's parametricity
 ## Contravariant functor
 ## Variance
 ## Variance in OOP
