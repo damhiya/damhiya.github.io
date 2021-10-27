@@ -186,7 +186,7 @@ Curry's paradox가 말하는 바가 바로 이것이다. `FoldT`와 `unfoldT`로
 `omega`가 \(\omega\), `bad`가 \(\Omega\)에 해당한다.
 ```haskell
 omega :: T a -> a
-omega = \x -> foldT x x
+omega = \x -> unfoldT x x
 
 bad :: a
 bad = omega (FoldT omega)

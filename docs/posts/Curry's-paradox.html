@@ -125,7 +125,7 @@ Date : 2021.8.1
 <p>Y combinator가 정의되었다는 사실은 흥미롭지만, 한편 골아픈 문제이기도 하다. 단지 <code>T a = T a -&gt; a</code> (여기서 등호는 두 타입이 isomorphic 함을 의미한다) 를 만족하는 데이터 타입을 정의하면 fixpoint combinator를 얻을 수 있다. fixpoint combinator에서 임의의 명제를 증명할 수 있으므로 이는 곧 타입체계가 inconsistent해 짐을 의미한다.</p>
 <p>Curry's paradox가 말하는 바가 바로 이것이다. <code>FoldT</code>와 <code>unfoldT</code>로 부터 임의의 명제를 증명해 보자. <code>y id</code> 로도 가능하지만 아까 소개한 <span class="math inline">\Omega</span>를 사용하는 편이 더 간단하다. <code>omega</code>가 <span class="math inline">\omega</span>, <code>bad</code>가 <span class="math inline">\Omega</span>에 해당한다.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ot">omega ::</span> <span class="dt">T</span> a <span class="ot">-&gt;</span> a</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>omega <span class="ot">=</span> \x <span class="ot">-&gt;</span> foldT x x</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>omega <span class="ot">=</span> \x <span class="ot">-&gt;</span> unfoldT x x</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ot">bad ::</span> a</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>bad <span class="ot">=</span> omega (<span class="dt">FoldT</span> omega)</span></code></pre></div>
