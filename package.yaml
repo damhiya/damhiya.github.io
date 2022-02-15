@@ -1,0 +1,26 @@
+name: ssg
+github: damhiya/damhiya.github.io
+author: damhiya
+maintainer: damhiya@gmail.com
+copyright: (c) 2022 SoonWon Moon
+
+executables:
+  ssg:
+    source-dirs: src
+    main: Main.hs
+    dependencies:
+      - base
+      - text
+      - dhall
+      - ema == 0.6.0.0
+      - lvar
+      - some
+      - bytestring
+      - shakespeare
+      - blaze-html
+    default-extensions:
+      - OverloadedStrings
+      - LambdaCase
+      - FlexibleContexts
+      - FlexibleInstances
+    ghc-options: -Wall -Wno-unused-matches

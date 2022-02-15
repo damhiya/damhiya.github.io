@@ -1,0 +1,42 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.6.
+--
+-- see: https://github.com/sol/hpack
+
+name:           ssg
+version:        0.0.0
+homepage:       https://github.com/damhiya/damhiya.github.io#readme
+bug-reports:    https://github.com/damhiya/damhiya.github.io/issues
+author:         damhiya
+maintainer:     damhiya@gmail.com
+copyright:      (c) 2022 SoonWon Moon
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/damhiya/damhiya.github.io
+
+executable ssg
+  main-is: Main.hs
+  other-modules:
+      Paths_ssg
+  hs-source-dirs:
+      src
+  default-extensions:
+      OverloadedStrings
+      LambdaCase
+      FlexibleContexts
+      FlexibleInstances
+  ghc-options: -Wall -Wno-unused-matches
+  build-depends:
+      base
+    , blaze-html
+    , bytestring
+    , dhall
+    , ema ==0.6.0.0
+    , lvar
+    , shakespeare
+    , some
+    , text
+  default-language: Haskell2010
