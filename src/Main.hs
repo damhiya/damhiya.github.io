@@ -19,10 +19,10 @@ import           Dhall                         (FromDhall, Generic, auto,
 import           Ema                           (Ema (..))
 import qualified Ema                           as E
 import qualified Ema.CLI                       as E
-import           Text.Blaze.Html.Renderer.Utf8 as H
-import           Text.Hamlet                   as H
+import qualified          Text.Blaze.Html.Renderer.Utf8 as H
+import qualified          Text.Hamlet                   as H
 
--- Model
+-- Model and it's FromDhall instance
 data Format = MarkDown | HTML
   deriving (Show, Generic)
 
@@ -38,25 +38,32 @@ instance FromDhall Format
 instance FromDhall Post
 
 -- Route
-data Route = Index deriving Show
+data Route
+  = RIndex
+  | RPost Text
+  deriving Show
 
 -- Ema instance
 instance Ema Model Route where
-  encodeRoute _model Index = "index.html"
-  decodeRoute _model "index.html" = Just Index
+  encodeRoute _model RIndex = "index.html"
+  encodeRoute _model _ = "index.html"
+  decodeRoute _model "index.html" = Just RIndex
   decodeRoute _model _            = Nothing
   allRoutes _model = undefined
 
 -- render
-render :: Some E.Action -> Model -> Route -> E.Asset ByteString
-render _ model route = E.AssetGenerated E.Html . H.renderHtml $
-  [hamlet|
+render' :: Model -> Route -> H.Html
+render' model route =
+  [H.shamlet|
     $doctype 5
     <html>
       <head>
       <body>
         hello!!
-  |] (\(r :: Route) _ -> encodeRoute model r)
+  |]
+  
+render :: Some E.Action -> Model -> Route -> E.Asset ByteString
+render _ model route = E.AssetGenerated E.Html . H.renderHtml $ render' model route
 
 -- main
 main :: IO ()
