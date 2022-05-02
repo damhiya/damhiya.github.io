@@ -151,7 +151,7 @@ render model = \case
           <html>
             <head>
             <body>
-              Post not fond!
+              Post not found!
         |]
       Just post ->
         [H.hamlet|
