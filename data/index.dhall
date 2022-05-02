@@ -4,21 +4,21 @@ let Format
 
 let Post
     : Type
-    = { title : Text, content : Text, format : Format }
+    = { ident : Text, content : Text, format : Format }
 
 let Model = List Post
 
 let model
     : Model
-    = [ { title = "Functor and Variance"
+    = [ { ident = "Functor-and-Variance"
         , content = ./posts/Functor-and-Variance.md as Text
         , format = Format.MarkDown
         }
-      , { title = "Curry's paradox"
+      , { ident = "Curry's-paradox"
         , content = ./posts/Curry's-paradox.md as Text
         , format = Format.MarkDown
         }
-      , { title = "Quantification"
+      , { ident = "quantification"
         , content = ./posts/Quantification.md as Text
         , format = Format.MarkDown
         }

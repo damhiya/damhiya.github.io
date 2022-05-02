@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.6.
+-- This file has been generated from package.yaml by hpack version 0.35.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -21,8 +21,6 @@ executable ssg
   main-is: Main.hs
   other-modules:
       Paths_ssg
-  hs-source-dirs:
-      src
   default-extensions:
       OverloadedStrings
       LambdaCase
@@ -33,9 +31,12 @@ executable ssg
       base
     , blaze-html
     , bytestring
+    , data-default
     , dhall
     , ema ==0.6.0.0
+    , fsnotify
     , lvar
+    , pandoc
     , shakespeare
     , some
     , text

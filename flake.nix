@@ -16,7 +16,7 @@
           (final: prev: {
             ssg = final.haskell-nix.cabalProject' {
               inherit index-state;
-              src = ./.;
+              src = ./ssg;
               compiler-nix-name = "ghc8107";
               shell.tools = {
                 cabal = {

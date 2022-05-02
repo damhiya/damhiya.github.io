@@ -6,7 +6,6 @@ copyright: (c) 2022 SoonWon Moon
 
 executables:
   ssg:
-    source-dirs: src
     main: Main.hs
     dependencies:
       - base
@@ -14,10 +13,13 @@ executables:
       - dhall
       - ema == 0.6.0.0
       - lvar
+      - fsnotify
       - some
       - bytestring
       - shakespeare
       - blaze-html
+      - pandoc
+      - data-default
     default-extensions:
       - OverloadedStrings
       - LambdaCase
