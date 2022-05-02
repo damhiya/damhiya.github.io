@@ -1,0 +1,7 @@
+https://damhiya.github.io/index.html
+https://damhiya.github.io/sitemap.txt
+https://damhiya.github.io/css/main.css
+https://damhiya.github.io/css/syntax.css
+https://damhiya.github.io/posts/Functor-and-Variance.html
+https://damhiya.github.io/posts/Curry's-paradox.html
+https://damhiya.github.io/posts/quantification.html
