@@ -36,6 +36,7 @@ executable ssg
     , ema ==0.6.0.0
     , fsnotify
     , lvar
+    , network-uri
     , pandoc
     , shakespeare
     , some

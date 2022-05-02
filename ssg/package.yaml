@@ -20,6 +20,7 @@ executables:
       - blaze-html
       - pandoc
       - data-default
+      - network-uri
     default-extensions:
       - OverloadedStrings
       - LambdaCase

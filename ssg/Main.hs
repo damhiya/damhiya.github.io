@@ -28,14 +28,15 @@ import qualified Text.Cassius as C
 import qualified System.FSNotify as FS
 import qualified Text.Pandoc as P
 import qualified Text.Pandoc.Highlighting as P
+import Network.URI
 
 -- Model and it's FromDhall instance
 data Format = MarkDown | HTML
   deriving (Show, Generic)
 
-data Post = Post { ident   :: Text
-                 , content :: Text
-                 , format  :: Format
+data Post = Post { identifier :: Text
+                 , content    :: Text
+                 , format     :: Format
                  }
   deriving (Show, Generic)
 
@@ -67,7 +68,7 @@ instance Ema Model Route where
     RSiteMap   -> "sitemap.txt"
     RMainCss   -> "css/main.css"
     RSyntaxCss -> "css/syntax.css"
-    (RPost i)  -> "posts/" <> T.unpack i <> ".html"
+    (RPost i)  -> "posts/" ++ T.unpack i ++ ".html"
   decodeRoute model = \case
     "index.html"  -> Just RIndex
     "sitemap.txt" -> Just RSiteMap
@@ -75,11 +76,12 @@ instance Ema Model Route where
     "css/syntax.css"  -> Just RSyntaxCss
     path | ("posts/" `isPrefixOf` path) && (".html" `isSuffixOf` path)
       -> let ident' = T.pack . dropBack 5 . drop 6 $ path in
-           if any ((== ident') . ident) model
+           if any ((== ident') . identifier) model
              then Just (RPost ident')
              else Nothing
     _ -> Nothing
-  allRoutes model = [ RIndex, RSiteMap, RMainCss, RSyntaxCss ] ++ [ RPost (ident post) | post <- model ]
+  allRoutes model = [ RIndex, RSiteMap, RMainCss, RSyntaxCss ]
+                 ++ [ RPost (identifier post) | post <- model ]
 
 -- render
 
@@ -119,8 +121,14 @@ render model = \case
     |] renderUrl
 
   RSiteMap -> E.AssetGenerated E.Other . fromString . unlines $
-    [ "https://damhiya.github.io/" ++ encodeRoute model route
-    | route <- allRoutes model :: [Route]
+    [ "https://damhiya.github.io/" ++
+      case route of
+        RIndex     -> "index.html"
+        RSiteMap   -> "sitemap.txt"
+        RMainCss   -> "css/main.css"
+        RSyntaxCss -> "css/syntax.css"
+        (RPost i)  -> "posts/" ++ escape (T.unpack i) ++ ".html"
+    | route <- [ RIndex ] ++ [ RPost (identifier post) | post <- model ]
     ]
 
   RMainCss   -> E.AssetGenerated E.Other . T.encodeUtf8 . C.renderCss $ 
@@ -136,7 +144,7 @@ render model = \case
   RSyntaxCss -> E.AssetGenerated E.Other . fromString $ P.styleToCss P.tango
 
   RPost ident' -> E.AssetGenerated E.Html . H.renderHtml $
-    case find (\post -> ident post == ident') model of
+    case find ((== ident') . identifier) model of
       Nothing ->
         [H.shamlet|
           $doctype 5
@@ -150,7 +158,7 @@ render model = \case
           $doctype 5
           <html>
             <head>
-              <title> #{ ident post }
+              <title> #{ identifier post }
               #{ katex }
               <link rel=stylesheet href=@{ RMainCss }>
               <link rel=stylesheet href=@{ RSyntaxCss }>
@@ -165,11 +173,12 @@ render model = \case
                   async>
         |] renderUrl
   where
+    escape = escapeURIString isUnescapedInURIComponent
     renderUrl r _ = "/" ++ encodeRoute model (r :: Route)
     links = [ [H.hamlet|
                 <li>
-                  <a href=@{ RPost (ident post) }>
-                    #{ ident post }
+                  <a href=@{ RPost (identifier post) }>
+                    #{ identifier post }
               |] renderUrl
             | post <- model
             ]
