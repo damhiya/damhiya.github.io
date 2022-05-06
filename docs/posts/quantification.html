@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html><head><title> quantification</title>
+<html><head><meta charset="utf-8">
+<title> quantification</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css" integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js" integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8" crossorigin="anonymous"></script>
 <script>document.addEventListener("DOMContentLoaded", () => {[...document.getElementsByClassName("math display")].forEach( element =>katex.render(element.textContent, element, {throwOnError: false, displayMode: true}));
@@ -8,7 +9,11 @@
 <link rel="stylesheet" href="/css/main.css">
 <link rel="stylesheet" href="/css/syntax.css">
 </head>
-<body><div class="page-wrapper"><p>Universal quantification</p>
+<body><header><a href="/index.html" id="return-to-index"><h1>Dependencism</h1>
+</a>
+</header>
+
+<div class="page-wrapper"><p>Universal quantification</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">id</span><span class="ot"> ::</span> <span class="kw">forall</span> a<span class="op">.</span> a <span class="ot">-&gt;</span> a</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">id</span> x <span class="ot">=</span> x</span></code></pre></div>
 <p>Existential quantification</p>

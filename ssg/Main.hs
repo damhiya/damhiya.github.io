@@ -119,6 +119,7 @@ render model = \case
           <link rel="stylesheet" href=@{ RMainCss }>
           <meta name="google-site-verification" content="D7Di9xyWnUvKT42Zw-idSUh7pgZz2OpC3xY97jd_UII">
         <body>
+          #{ returnToIndex }
           <div class=page-wrapper>
             <a href="https://github.com/damhiya"> 깃헙 프로필
             <h2> Posts
@@ -140,11 +141,22 @@ render model = \case
   RMainCss   -> E.AssetGenerated E.Other . T.encodeUtf8 . C.renderCss $ 
     [C.cassius|
       body
+        margin: 0
+        width: 100%
         font-family: sans-serif
+      a
+        text-decoration: none
+      header
+        background: #24292F
+        padding: 5px
       .page-wrapper
         max-width: 800px
         margin: auto
         padding: 30px
+      #return-to-index
+        color: #A9DA4B
+      #return-to-index > h1
+        margin: 0
     |] renderUrl
 
   RSyntaxCss -> E.AssetGenerated E.Other . fromString . T.unpack $ syntaxHighlight model
@@ -170,6 +182,7 @@ render model = \case
               <link rel="stylesheet" href=@{ RMainCss }>
               <link rel="stylesheet" href=@{ RSyntaxCss }>
             <body>
+              #{ returnToIndex }
               <div class=page-wrapper>
                 #{ markdownToHtml (content post) }
                 <script src="https://utteranc.es/client.js"
@@ -182,6 +195,13 @@ render model = \case
   where
     escape = escapeURIString isUnescapedInURIComponent
     renderUrl r _ = "/" ++ encodeRoute model (r :: Route)
+    returnToIndex =
+      [H.hamlet|
+        <header>
+          <a href=@{ RIndex } id="return-to-index">
+            <h1>
+              Dependencism
+      |] renderUrl
     links = [ [H.hamlet|
                 <li>
                   <a href=@{ RPost (identifier post) }>
