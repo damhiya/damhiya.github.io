@@ -31,6 +31,7 @@ import qualified Text.Pandoc.Highlighting as P
 import Network.URI
 
 -- Model and it's FromDhall instance
+
 data Format = MarkDown | HTML
   deriving (Show, Generic)
 
@@ -40,10 +41,14 @@ data Post = Post { identifier :: Text
                  }
   deriving (Show, Generic)
 
-type Model = [Post]
+data Model = Model { syntaxHighlight :: Text
+                   , posts :: [Post]
+                   }
+  deriving (Show, Generic)
 
 instance FromDhall Format
 instance FromDhall Post
+instance FromDhall Model
 
 -- Route
 data Route
@@ -76,12 +81,12 @@ instance Ema Model Route where
     "css/syntax.css"  -> Just RSyntaxCss
     path | ("posts/" `isPrefixOf` path) && (".html" `isSuffixOf` path)
       -> let ident' = T.pack . dropBack 5 . drop 6 $ path in
-           if any ((== ident') . identifier) model
+           if any ((== ident') . identifier) (posts model)
              then Just (RPost ident')
              else Nothing
     _ -> Nothing
   allRoutes model = [ RIndex, RSiteMap, RMainCss, RSyntaxCss ]
-                 ++ [ RPost (identifier post) | post <- model ]
+                 ++ [ RPost (identifier post) | post <- posts model ]
 
 -- render
 
@@ -128,7 +133,7 @@ render model = \case
         RMainCss   -> "css/main.css"
         RSyntaxCss -> "css/syntax.css"
         (RPost i)  -> "posts/" ++ escape (T.unpack i) ++ ".html"
-    | route <- [ RIndex ] ++ [ RPost (identifier post) | post <- model ]
+    | route <- [ RIndex ] ++ [ RPost (identifier post) | post <- posts model ]
     ]
 
   RMainCss   -> E.AssetGenerated E.Other . T.encodeUtf8 . C.renderCss $ 
@@ -136,15 +141,15 @@ render model = \case
       body
         font-family: sans-serif
       .page-wrapper
-        max-width: 1000px
+        max-width: 800px
         margin: auto
         padding: 30px
     |] renderUrl
 
-  RSyntaxCss -> E.AssetGenerated E.Other . fromString $ P.styleToCss P.tango
+  RSyntaxCss -> E.AssetGenerated E.Other . fromString . T.unpack $ syntaxHighlight model
 
   RPost ident' -> E.AssetGenerated E.Html . H.renderHtml $
-    case find ((== ident') . identifier) model of
+    case find ((== ident') . identifier) (posts model) of
       Nothing ->
         [H.shamlet|
           $doctype 5
@@ -180,7 +185,7 @@ render model = \case
                   <a href=@{ RPost (identifier post) }>
                     #{ identifier post }
               |] renderUrl
-            | post <- model
+            | post <- posts model
             ]
     katex =
       [H.hamlet|
@@ -210,7 +215,7 @@ run dir = do
     E.runEma (const render) $ \_ vmodel -> liftIO $ do
       readModel >>= L.set vmodel
       _ <- FS.watchTree manager dir (const True) $ \event -> do
-        readModel >>= \x -> print (length x) >> L.set vmodel x
+        readModel >>= L.set vmodel
       threadDelay maxBound
   where
     conf :: FS.WatchConfig
