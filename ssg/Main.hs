@@ -114,8 +114,9 @@ render model = \case
       $doctype 5
       <html>
         <head>
+          <meta charset="utf-8">
           <title> damhiya's blog
-          <link rel=stylesheet href=@{ RMainCss }>
+          <link rel="stylesheet" href=@{ RMainCss }>
           <meta name="google-site-verification" content="D7Di9xyWnUvKT42Zw-idSUh7pgZz2OpC3xY97jd_UII">
         <body>
           <div class=page-wrapper>
@@ -163,10 +164,11 @@ render model = \case
           $doctype 5
           <html>
             <head>
+              <meta charset="utf-8">
               <title> #{ identifier post }
               #{ katex }
-              <link rel=stylesheet href=@{ RMainCss }>
-              <link rel=stylesheet href=@{ RSyntaxCss }>
+              <link rel="stylesheet" href=@{ RMainCss }>
+              <link rel="stylesheet" href=@{ RSyntaxCss }>
             <body>
               <div class=page-wrapper>
                 #{ markdownToHtml (content post) }
