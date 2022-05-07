@@ -42,8 +42,9 @@ data Post = Post { identifier :: Text
                  }
   deriving (Show, Generic)
 
-data Model = Model { syntaxHighlight :: Text
-                   , posts :: [Post]
+data Model = Model { mainCss   :: Text
+                   , syntaxCss :: Text
+                   , posts     :: [Post]
                    }
   deriving (Show, Generic)
 
@@ -76,10 +77,10 @@ instance Ema Model Route where
     RSyntaxCss -> "css/syntax.css"
     (RPost i)  -> "posts/" ++ T.unpack i ++ ".html"
   decodeRoute model = \case
-    "index.html"  -> Just RIndex
-    "sitemap.txt" -> Just RSiteMap
-    "css/main.css"    -> Just RMainCss
-    "css/syntax.css"  -> Just RSyntaxCss
+    "index.html"     -> Just RIndex
+    "sitemap.txt"    -> Just RSiteMap
+    "css/main.css"   -> Just RMainCss
+    "css/syntax.css" -> Just RSyntaxCss
     path | ("posts/" `isPrefixOf` path) && (".html" `isSuffixOf` path)
       -> let ident' = T.pack . dropBack 5 . drop 6 $ path in
            if any ((== ident') . identifier) (posts model)
@@ -121,38 +122,9 @@ render model = \case
     | route <- [ RIndex ] ++ [ RPost (identifier post) | post <- posts model ]
     ]
 
-  RMainCss   -> E.AssetGenerated E.Other . T.encodeUtf8 . C.renderCss $ 
-    [C.cassius|
-      body
-        margin: 0
-        font-family: sans-serif
-      a
-        text-decoration: none
-      a:hover
-        text-decoration: underline
-      #sidebar
-        padding: 2rem
-        background: #0C0C5A
-      #sidebar > a
-        color: white
-      main
-        padding: 3rem
-      @media (width >= 48rem)
-        #sidebar
-          box-sizing: border-box
-          position: fixed
-          left: 0
-          width: 18rem
-          height: 100%
-        main
-          margin-left: 18rem
-          max-width: 50rem
-      @media (width < 48rem) 
-        #sidebar
-          width: 100%
-    |] renderUrl
+  RMainCss   -> E.AssetGenerated E.Other . fromString . T.unpack $ mainCss model
 
-  RSyntaxCss -> E.AssetGenerated E.Other . fromString . T.unpack $ syntaxHighlight model
+  RSyntaxCss -> E.AssetGenerated E.Other . fromString . T.unpack $ syntaxCss model
 
   RIndex -> E.AssetGenerated E.Html . H.renderHtml $
     [H.hamlet|

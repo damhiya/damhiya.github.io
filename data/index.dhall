@@ -4,15 +4,16 @@ let Format
 
 let Post
     : Type
-    = { identifier : Text, title: Text, content : Text, format : Format }
+    = { identifier : Text, title : Text, content : Text, format : Format }
 
 let Model
     : Type
-    = { syntaxHighlight : Text, posts : List Post }
+    = { mainCss : Text, syntaxCss : Text, posts : List Post }
 
 let model
     : Model
-    = { syntaxHighlight = ./syntax.css as Text
+    = { mainCss = ./main.css as Text
+      , syntaxCss = ./syntax.css as Text
       , posts =
         [ { identifier = "Functor-and-Variance"
           , title = "Functor and variance"
