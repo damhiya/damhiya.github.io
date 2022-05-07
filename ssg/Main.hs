@@ -36,6 +36,7 @@ data Format = MarkDown | HTML
   deriving (Show, Generic)
 
 data Post = Post { identifier :: Text
+                 , title      :: Text
                  , content    :: Text
                  , format     :: Format
                  }
@@ -181,7 +182,7 @@ render model = \case
           <html>
             <head>
               <meta charset="utf-8">
-              <title> #{ identifier post }
+              <title> #{ title post }
               #{ katex }
               <link rel="stylesheet" href=@{ RMainCss }>
               <link rel="stylesheet" href=@{ RSyntaxCss }>
@@ -202,7 +203,7 @@ render model = \case
     links = [ [H.hamlet|
                 <li>
                   <a href=@{ RPost (identifier post) }>
-                    #{ identifier post }
+                    #{ title post }
               |] renderUrl
             | post <- posts model
             ]
