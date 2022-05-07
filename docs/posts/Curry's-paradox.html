@@ -9,11 +9,10 @@
 <link rel="stylesheet" href="/css/main.css">
 <link rel="stylesheet" href="/css/syntax.css">
 </head>
-<body><header><a href="/index.html" id="return-to-index"><h1>Dependencism</h1>
-</a>
-</header>
+<body><div id="sidebar"><a href="/index.html"> Home</a>
+</div>
 
-<div class="page-wrapper"><!--
+<main><!--
 Date : 2021.8.1
 -->
 <p>λ-calculus, turing machine 등의 주제를 논할 때에는 항상 프로그램의 정지 여부에 관한 문제가 따라 나온다. 정지하는 프로그램을 판별하는 일은 커리-하워드 대응과 결부할 때 더욱 중요한데, 종료하지 않는 프로그램을 허용하는 것은 곧 논리체계가 inconsistent 함을 의미하기 때문이다. 이 글 에서는 이런 non-termination을 유발할 수 있는 요소 중 하나인 Curry's paradox에 대해 설명한다.</p>
@@ -164,6 +163,6 @@ Date : 2021.8.1
 <div class="sourceCode" id="cb15"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> T <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">:</span> <span class="ot">(</span>T <span class="ot">→</span> T<span class="ot">)</span> <span class="ot">→</span> T</span></code></pre></div>
 <script src="https://utteranc.es/client.js" repo="damhiya/damhiya.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
-</div>
+</main>
 </body>
 </html>

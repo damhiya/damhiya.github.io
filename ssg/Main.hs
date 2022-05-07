@@ -109,24 +109,6 @@ markdownToHtml content = flip fromRight (P.runPure $ read content >>= write)
 
 render :: Model -> Route -> E.Asset ByteString
 render model = \case
-  RIndex -> E.AssetGenerated E.Html . H.renderHtml $
-    [H.hamlet|
-      $doctype 5
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <title> damhiya's blog
-          <link rel="stylesheet" href=@{ RMainCss }>
-          <meta name="google-site-verification" content="D7Di9xyWnUvKT42Zw-idSUh7pgZz2OpC3xY97jd_UII">
-        <body>
-          #{ returnToIndex }
-          <div class=page-wrapper>
-            <a href="https://github.com/damhiya"> 깃헙 프로필
-            <h2> Posts
-            <ul>
-              #{ links }
-    |] renderUrl
-
   RSiteMap -> E.AssetGenerated E.Other . fromString . unlines $
     [ "https://damhiya.github.io/" ++
       case route of
@@ -142,24 +124,46 @@ render model = \case
     [C.cassius|
       body
         margin: 0
-        width: 100%
         font-family: sans-serif
       a
         text-decoration: none
-      header
-        background: #24292F
-        padding: 5px
-      .page-wrapper
-        max-width: 800px
-        margin: auto
+      a:hover
+        text-decoration: underline
+      #sidebar
+        box-sizing: border-box
+        position: fixed
+        left: 0
+        width: 18rem
+        height: 100%
         padding: 30px
-      #return-to-index
-        color: #A9DA4B
-      #return-to-index > h1
-        margin: 0
+        background: #0C0C5A
+      #sidebar > a
+        color: white
+      main
+        margin-left: 18rem
+        max-width: 800px
+        padding: 50px
     |] renderUrl
 
   RSyntaxCss -> E.AssetGenerated E.Other . fromString . T.unpack $ syntaxHighlight model
+
+  RIndex -> E.AssetGenerated E.Html . H.renderHtml $
+    [H.hamlet|
+      $doctype 5
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title> damhiya's blog
+          <link rel="stylesheet" href=@{ RMainCss }>
+          <meta name="google-site-verification" content="D7Di9xyWnUvKT42Zw-idSUh7pgZz2OpC3xY97jd_UII">
+        <body>
+          #{ sidebar }
+          <main>
+            <a href="https://github.com/damhiya"> 깃헙 프로필
+            <h2> Posts
+            <ul>
+              #{ links }
+    |] renderUrl
 
   RPost ident' -> E.AssetGenerated E.Html . H.renderHtml $
     case find ((== ident') . identifier) (posts model) of
@@ -182,25 +186,18 @@ render model = \case
               <link rel="stylesheet" href=@{ RMainCss }>
               <link rel="stylesheet" href=@{ RSyntaxCss }>
             <body>
-              #{ returnToIndex }
-              <div class=page-wrapper>
+              #{ sidebar }
+              <main>
                 #{ markdownToHtml (content post) }
-                <script src="https://utteranc.es/client.js"
-                  repo="damhiya/damhiya.github.io"
-                  issue-term="pathname"
-                  theme="github-light"
-                  crossorigin="anonymous"
-                  async>
+                #{ utterances }
         |] renderUrl
   where
     escape = escapeURIString isUnescapedInURIComponent
     renderUrl r _ = "/" ++ encodeRoute model (r :: Route)
-    returnToIndex =
+    sidebar =
       [H.hamlet|
-        <header>
-          <a href=@{ RIndex } id="return-to-index">
-            <h1>
-              Dependencism
+        <div id="sidebar">
+          <a href=@{ RIndex }> Home
       |] renderUrl
     links = [ [H.hamlet|
                 <li>
@@ -228,6 +225,15 @@ render model = \case
               katex.render(element.textContent, element, {throwOnError: false, displayMode: false})
             );
           });
+      |] renderUrl
+    utterances =
+      [H.hamlet|
+        <script src="https://utteranc.es/client.js"
+          repo="damhiya/damhiya.github.io"
+          issue-term="pathname"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
       |] renderUrl
 
 -- main

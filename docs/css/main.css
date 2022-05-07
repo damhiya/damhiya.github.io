@@ -1,1 +1,1 @@
-body{margin:0;width:100%;font-family:sans-serif}a{text-decoration:none}header{background:#24292F;padding:5px}.page-wrapper{max-width:800px;margin:auto;padding:30px}#return-to-index{color:#A9DA4B}#return-to-index > h1{margin:0}
+body{margin:0;font-family:sans-serif}a{text-decoration:none}a:hover{text-decoration:underline}#sidebar{box-sizing:border-box;position:fixed;left:0;width:18rem;height:100%;padding:30px;background:#0C0C5A}#sidebar > a{color:white}main{margin-left:18rem;max-width:800px;padding:50px}
