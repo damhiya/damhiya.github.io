@@ -131,19 +131,25 @@ render model = \case
       a:hover
         text-decoration: underline
       #sidebar
-        box-sizing: border-box
-        position: fixed
-        left: 0
-        width: 18rem
-        height: 100%
         padding: 2rem
         background: #0C0C5A
       #sidebar > a
         color: white
       main
-        margin-left: 18rem
-        max-width: 50rem
         padding: 3rem
+      @media (width >= 48rem)
+        #sidebar
+          box-sizing: border-box
+          position: fixed
+          left: 0
+          width: 18rem
+          height: 100%
+        main
+          margin-left: 18rem
+          max-width: 50rem
+      @media (width < 48rem) 
+        #sidebar
+          width: 100%
     |] renderUrl
 
   RSyntaxCss -> E.AssetGenerated E.Other . fromString . T.unpack $ syntaxHighlight model
