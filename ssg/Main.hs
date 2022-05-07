@@ -136,14 +136,14 @@ render model = \case
         left: 0
         width: 18rem
         height: 100%
-        padding: 30px
+        padding: 2rem
         background: #0C0C5A
       #sidebar > a
         color: white
       main
         margin-left: 18rem
-        max-width: 800px
-        padding: 50px
+        max-width: 50rem
+        padding: 3rem
     |] renderUrl
 
   RSyntaxCss -> E.AssetGenerated E.Other . fromString . T.unpack $ syntaxHighlight model
@@ -157,6 +157,7 @@ render model = \case
           <title> damhiya's blog
           <link rel="stylesheet" href=@{ RMainCss }>
           <meta name="google-site-verification" content="D7Di9xyWnUvKT42Zw-idSUh7pgZz2OpC3xY97jd_UII">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <body>
           #{ sidebar }
           <main>
@@ -186,6 +187,7 @@ render model = \case
               #{ katex }
               <link rel="stylesheet" href=@{ RMainCss }>
               <link rel="stylesheet" href=@{ RSyntaxCss }>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <body>
               #{ sidebar }
               <main>
