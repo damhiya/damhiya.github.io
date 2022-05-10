@@ -1,12 +1,16 @@
+* {
+  box-sizing: border-box
+}
 body {
   margin: 0;
   font-family: sans-serif
 }
 a {
-  text-decoration: none
+  text-decoration: none;
+  color: #007BFF
 }
 a:hover {
-  text-decoration: underline
+  color: #0056B3
 }
 #sidebar {
   background: #0C0C5A
@@ -14,9 +18,8 @@ a:hover {
 #sidebar > a {
   color: white
 }
-@media (width >= 48rem) {
+@media (min-width: 768px) {
   #sidebar {
-    box-sizing: border-box;
     position: fixed;
     left: 0;
     width: 18rem;
@@ -29,7 +32,7 @@ a:hover {
     margin-left: 18rem
   }
 }
-@media (width < 48rem) {
+@media (max-width: 767px) {
   #sidebar {
     width: 100%;
     padding: 1rem
