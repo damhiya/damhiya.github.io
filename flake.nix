@@ -50,6 +50,5 @@
           type = "app";
           program = "${packages.default}/bin/ssg";
         };
-        defaultPackages = packages.default;
       });
 }
