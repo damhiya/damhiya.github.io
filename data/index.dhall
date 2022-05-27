@@ -8,7 +8,7 @@ let Post
 
 let Model
     : Type
-    = { mainCss : Text, syntaxCss : Text, posts : List Post }
+    = { mainCss : Text, syntaxCss : Text, posts : List Post, haskellTutorial : List Post }
 
 let model
     : Model
@@ -28,6 +28,13 @@ let model
         , { identifier = "quantification"
           , title = "Quantification"
           , content = ./posts/Quantification.md as Text
+          , format = Format.MarkDown
+          }
+        ]
+      , haskellTutorial =
+        [ { identifier = "Installation"
+          , title = "Installation"
+          , content = ./haskellTutorial/Installation.md as Text
           , format = Format.MarkDown
           }
         ]

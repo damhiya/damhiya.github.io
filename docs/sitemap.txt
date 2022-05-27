@@ -2,3 +2,4 @@ https://damhiya.github.io/index.html
 https://damhiya.github.io/posts/Functor-and-Variance.html
 https://damhiya.github.io/posts/Curry%27s-paradox.html
 https://damhiya.github.io/posts/quantification.html
+https://damhiya.github.io/haskellTutorial/Installation.html

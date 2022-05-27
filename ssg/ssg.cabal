@@ -26,7 +26,7 @@ executable ssg
       LambdaCase
       FlexibleContexts
       FlexibleInstances
-  ghc-options: -Wall -Wno-unused-matches
+  ghc-options: -Wall -Wno-unused-matches -Wno-name-shadowing
   build-depends:
       base
     , blaze-html
